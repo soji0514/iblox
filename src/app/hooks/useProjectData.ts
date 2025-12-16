@@ -1,7 +1,25 @@
 import { useState, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
 import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 
-const API_URL = `https://${projectId}.supabase.co/functions/v1/make-server-bb561f76`;
+// Map project names to folder paths in Supabase Storage
+const FOLDER_MAP: Record<string, string> = {
+  "Negative Freak": "project/negativefreak",
+  "yarn plantery": "project/yarnplantery",
+  "Citir": "project/citir",
+  "dr.br": "project/drbr",
+  "sin su ru": "project/sinsuru",
+  "puresome": "project/puresome",
+  "0100": "project/0100",
+  "hyudo": "project/hyudo",
+  "un deux trois": "project/undeuxtrois",
+  "the garage tapes": "project/thegaragetapes",
+};
+
+const supabase = createClient(
+  `https://${projectId}.supabase.co`,
+  publicAnonKey
+);
 
 export function useProjectData(projectName: string | null) {
   const [images, setImages] = useState<string[]>([]);
@@ -22,72 +40,46 @@ export function useProjectData(projectName: string | null) {
 
       try {
         console.log(`[useProjectData] Fetching data for project: ${projectName}`);
-        console.log(`[useProjectData] API URL: ${API_URL}`);
-        console.log(`[useProjectData] Project ID: ${projectId}`);
         
-        // Test health endpoint first
-        const healthUrl = `${API_URL}/health`;
-        console.log(`[useProjectData] Testing health endpoint: ${healthUrl}`);
+        const folderPath = FOLDER_MAP[projectName];
         
-        try {
-          const healthResponse = await fetch(healthUrl, {
-            headers: {
-              Authorization: `Bearer ${publicAnonKey}`,
-            },
+        if (!folderPath) {
+          console.log(`[useProjectData] No folder mapping found for: ${projectName}`);
+          setImages([]);
+          setLoading(false);
+          return;
+        }
+
+        console.log(`[useProjectData] Listing files from bucket: portfolio, folder: ${folderPath}`);
+
+        // Use Supabase client to list files
+        const { data: files, error: listError } = await supabase.storage
+          .from("portfolio")
+          .list(folderPath);
+
+        if (listError) {
+          console.error(`[useProjectData] Failed to list files:`, listError);
+          throw new Error(`Failed to list files: ${listError.message}`);
+        }
+
+        console.log(`[useProjectData] Found ${files?.length || 0} files:`, files);
+
+        // Generate public URLs for each file
+        const imageUrls = (files || [])
+          .filter((file: any) => !file.name.includes('.emptyFolderPlaceholder'))
+          .map((file: any) => {
+            const { data } = supabase.storage
+              .from("portfolio")
+              .getPublicUrl(`${folderPath}/${file.name}`);
+            return data.publicUrl;
           });
-          console.log(`[useProjectData] Health check status: ${healthResponse.status}`);
-          const healthData = await healthResponse.json();
-          console.log(`[useProjectData] Health check response:`, healthData);
-        } catch (healthError) {
-          console.error(`[useProjectData] Health check failed:`, healthError);
-        }
-        
-        // Fetch images
-        const imagesUrl = `${API_URL}/projects/${encodeURIComponent(projectName)}/images`;
-        console.log(`[useProjectData] Fetching images from: ${imagesUrl}`);
-        
-        const imagesResponse = await fetch(
-          imagesUrl,
-          {
-            headers: {
-              Authorization: `Bearer ${publicAnonKey}`,
-            },
-          }
-        );
 
-        console.log(`[useProjectData] Images response status: ${imagesResponse.status}`);
-
-        if (!imagesResponse.ok) {
-          const errorText = await imagesResponse.text();
-          console.error(`[useProjectData] Images fetch failed:`, errorText);
-          throw new Error(`Failed to fetch images: ${errorText}`);
-        }
-
-        const imagesData = await imagesResponse.json();
-        console.log(`[useProjectData] Images response:`, imagesData);
-        const imageUrls = imagesData.images?.map((img: any) => img.url) || [];
-        console.log(`[useProjectData] Extracted ${imageUrls.length} image URLs`);
+        console.log(`[useProjectData] Generated ${imageUrls.length} image URLs`);
         if (imageUrls.length > 0) {
           console.log(`[useProjectData] First image URL:`, imageUrls[0]);
         }
+
         setImages(imageUrls);
-
-        // Fetch description
-        const descResponse = await fetch(
-          `${API_URL}/projects/${encodeURIComponent(projectName)}/description`,
-          {
-            headers: {
-              Authorization: `Bearer ${publicAnonKey}`,
-            },
-          }
-        );
-
-        if (!descResponse.ok) {
-          throw new Error("Failed to fetch description");
-        }
-
-        const descData = await descResponse.json();
-        setDescription(descData.description || "");
       } catch (err) {
         console.error("[useProjectData] Error fetching project data:", err);
         setError(err instanceof Error ? err.message : "Unknown error");

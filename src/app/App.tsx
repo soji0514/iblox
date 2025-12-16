@@ -1,60 +1,21 @@
 import { useState } from "react";
-import { NegativeFreakProject } from "./components/projects/NegativeFreak";
-import { YarnPlanteryProject } from "./components/projects/YarnPlantery";
-import { CitirProject } from "./components/projects/Citir";
-import { DrBrProject } from "./components/projects/DrBr";
-import { SinSuRuProject } from "./components/projects/SinSuRu";
-import { PuresomeProject } from "./components/projects/Puresome";
-import { ZeroOneZeroZeroProject } from "./components/projects/ZeroOneZeroZero";
-import { HyudoProject } from "./components/projects/Hyudo";
-import { UnDeuxTroisProject } from "./components/projects/UnDeuxTrois";
-import { TheGarageTapesProject } from "./components/projects/TheGarageTapes";
 import ProjectGallery from "./components/ProjectGallery";
 
 export default function App() {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
-  const projectData = {
-    "yarn plantery": {
-      description: YarnPlanteryProject.description,
-      fallbackImages: YarnPlanteryProject.images,
-    },
-    "Negative Freak": {
-      description: NegativeFreakProject.description,
-      fallbackImages: NegativeFreakProject.images,
-    },
-    "Citir": {
-      description: CitirProject.description,
-      fallbackImages: CitirProject.images,
-    },
-    "dr.br": {
-      description: DrBrProject.description,
-      fallbackImages: DrBrProject.images,
-    },
-    "sin su ru": {
-      description: SinSuRuProject.description,
-      fallbackImages: SinSuRuProject.images,
-    },
-    "puresome": {
-      description: PuresomeProject.description,
-      fallbackImages: PuresomeProject.images,
-    },
-    "0100": {
-      description: ZeroOneZeroZeroProject.description,
-      fallbackImages: ZeroOneZeroZeroProject.images,
-    },
-    "hyudo": {
-      description: HyudoProject.description,
-      fallbackImages: HyudoProject.images,
-    },
-    "un deux trois": {
-      description: UnDeuxTroisProject.description,
-      fallbackImages: UnDeuxTroisProject.images,
-    },
-    "the garage tapes": {
-      description: TheGarageTapesProject.description,
-      fallbackImages: TheGarageTapesProject.images,
-    },
+  // Project descriptions
+  const projectDescriptions: Record<string, string> = {
+    "yarn plantery": "YARN PLANTERY\nBRAND IDENTITY\nPACKAGE DESIGN\nGRAPHIC DESIGN",
+    "Negative Freak": "NEGATIVE FREAK\nBRAND IDENTITY\nEDITORIAL DESIGN\nWEB DESIGN",
+    "Citir": "CITIR\nBRAND IDENTITY\nPACKAGE DESIGN\nGRAPHIC DESIGN",
+    "dr.br": "DR.BR\nBRAND IDENTITY\nPACKAGE DESIGN\nGRAPHIC DESIGN",
+    "sin su ru": "SIN SU RU\nBRAND IDENTITY\nSPACE DESIGN\nGRAPHIC DESIGN",
+    "puresome": "PURESOME\nBRAND IDENTITY\nPACKAGE DESIGN\nGRAPHIC DESIGN",
+    "0100": "0100\nBRAND IDENTITY\nEDITORIAL DESIGN\nGRAPHIC DESIGN",
+    "hyudo": "HYUDO\nBRAND IDENTITY\nPACKAGE DESIGN\nGRAPHIC DESIGN",
+    "un deux trois": "UN DEUX TROIS\nBRAND IDENTITY\nSPACE DESIGN\nGRAPHIC DESIGN",
+    "the garage tapes": "THE GARAGE TAPES\nBRAND IDENTITY\nEDITORIAL DESIGN\nGRAPHIC DESIGN",
   };
 
   const projects = [
@@ -70,21 +31,11 @@ export default function App() {
     { name: "the garage tapes", year: "2025" },
   ];
 
-  const skills = [
-    "commercial design",
-    "shooting direction",
-    "brand identity",
-    "brand strategy",
-    "publishing",
-    "Package design",
-    "bi/ci",
-  ];
-
   const handleProjectClick = (projectName: string) => {
     setSelectedProject(projectName);
   };
 
-  const currentProject = selectedProject ? projectData[selectedProject as keyof typeof projectData] : null;
+  const currentDescription = selectedProject ? projectDescriptions[selectedProject] : null;
 
   return (
     <div className="bg-black relative size-full font-['Pretendard:Bold',sans-serif] flex">
@@ -105,8 +56,8 @@ export default function App() {
 
         {/* Left Panel - Description */}
         <div className="absolute left-[20px] top-[200px] w-[calc(100%-40px)] max-w-[251px] font-['Pretendard:Regular',sans-serif] leading-[25px] not-italic text-[13px] text-white tracking-[-0.26px] uppercase">
-          {currentProject ? (
-            <p className="whitespace-pre-line m-0">{currentProject.description}</p>
+          {currentDescription ? (
+            <p className="whitespace-pre-line m-0">{currentDescription}</p>
           ) : (
             <p className="text-[#949494] m-0">프로젝트를 선택해주세요.</p>
           )}
@@ -136,10 +87,9 @@ export default function App() {
       {/* Center Panel - Scrollable */}
       <div className="w-[57.14%] bg-white h-full overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
         <div className="w-full">
-          {selectedProject && currentProject && (
+          {selectedProject && (
             <ProjectGallery 
               projectName={selectedProject} 
-              fallbackImages={currentProject.fallbackImages} 
             />
           )}
         </div>

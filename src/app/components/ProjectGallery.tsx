@@ -2,18 +2,12 @@ import { useProjectData } from "../hooks/useProjectData";
 
 interface ProjectGalleryProps {
   projectName: string;
-  fallbackImages: string[];
 }
 
-export default function ProjectGallery({ projectName, fallbackImages }: ProjectGalleryProps) {
+export default function ProjectGallery({ projectName }: ProjectGalleryProps) {
   const { images, loading, error } = useProjectData(projectName);
 
-  console.log(`[ProjectGallery] Project: ${projectName}, Images from Supabase: ${images.length}, Fallback images: ${fallbackImages.length}`);
-
-  // Use Supabase images if available, otherwise use fallback images
-  const displayImages = images.length > 0 ? images : fallbackImages;
-
-  console.log(`[ProjectGallery] Displaying ${displayImages.length} images`);
+  console.log(`[ProjectGallery] Project: ${projectName}, Images from Supabase: ${images.length}`);
 
   if (loading) {
     return (
@@ -25,9 +19,14 @@ export default function ProjectGallery({ projectName, fallbackImages }: ProjectG
 
   if (error) {
     console.error(`[ProjectGallery] Error loading ${projectName} images:`, error);
+    return (
+      <div className="w-full flex items-center justify-center p-10">
+        <p className="text-red-500">Error loading images: {error}</p>
+      </div>
+    );
   }
 
-  if (displayImages.length === 0) {
+  if (images.length === 0) {
     return (
       <div className="w-full flex items-center justify-center p-10">
         <p className="text-gray-500">No images available</p>
@@ -37,7 +36,7 @@ export default function ProjectGallery({ projectName, fallbackImages }: ProjectG
 
   return (
     <div className="w-full">
-      {displayImages.map((image, index) => (
+      {images.map((image, index) => (
         <img
           key={index}
           src={image}

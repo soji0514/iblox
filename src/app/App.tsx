@@ -38,7 +38,7 @@ export default function App() {
   const currentDescription = selectedProject ? projectDescriptions[selectedProject] : null;
 
   return (
-    <div className="bg-black relative size-full font-['Pretendard:Bold',sans-serif] flex">
+    <div className="bg-black fixed inset-0 w-full h-full font-['Pretendard:Bold',sans-serif] flex overflow-hidden">
       {/* Left Panel */}
       <div className="w-[28.57%] relative overflow-hidden flex flex-col">
         {/* Left Panel - Header */}

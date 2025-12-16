@@ -1,5 +1,5 @@
 export const YarnPlanteryProject = {
-  description: "yarn plantery 프로젝트 설명입니다.",
+  description: "yarn plantery 프로젝트는 곧 업데이트 예정입니다.",
   images: [],
 };
 

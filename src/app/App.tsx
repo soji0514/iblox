@@ -1,21 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProjectGallery from "./components/ProjectGallery";
+import { NegativeFreakProject } from "./components/projects/NegativeFreak";
+import { YarnPlanteryProject } from "./components/projects/YarnPlantery";
+import { CitirProject } from "./components/projects/Citir";
+import { DrBrProject } from "./components/projects/DrBr";
+import { SinSuRuProject } from "./components/projects/SinSuRu";
+import { PuresomeProject } from "./components/projects/Puresome";
+import { ZeroOneZeroZeroProject } from "./components/projects/ZeroOneZeroZero";
+import { HyudoProject } from "./components/projects/Hyudo";
+import { UnDeuxTroisProject } from "./components/projects/UnDeuxTrois";
+import { TheGarageTapesProject } from "./components/projects/TheGarageTapes";
 
 export default function App() {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
-  // Project descriptions
-  const projectDescriptions: Record<string, string> = {
-    "yarn plantery": "YARN PLANTERY\nBRAND IDENTITY\nPACKAGE DESIGN\nGRAPHIC DESIGN",
-    "Negative Freak": "NEGATIVE FREAK\nBRAND IDENTITY\nEDITORIAL DESIGN\nWEB DESIGN",
-    "Citir": "CITIR\nBRAND IDENTITY\nPACKAGE DESIGN\nGRAPHIC DESIGN",
-    "dr.br": "DR.BR\nBRAND IDENTITY\nPACKAGE DESIGN\nGRAPHIC DESIGN",
-    "sin su ru": "SIN SU RU\nBRAND IDENTITY\nSPACE DESIGN\nGRAPHIC DESIGN",
-    "puresome": "PURESOME\nBRAND IDENTITY\nPACKAGE DESIGN\nGRAPHIC DESIGN",
-    "0100": "0100\nBRAND IDENTITY\nEDITORIAL DESIGN\nGRAPHIC DESIGN",
-    "hyudo": "HYUDO\nBRAND IDENTITY\nPACKAGE DESIGN\nGRAPHIC DESIGN",
-    "un deux trois": "UN DEUX TROIS\nBRAND IDENTITY\nSPACE DESIGN\nGRAPHIC DESIGN",
-    "the garage tapes": "THE GARAGE TAPES\nBRAND IDENTITY\nEDITORIAL DESIGN\nGRAPHIC DESIGN",
+  // Map project names to their descriptions
+  const projectDescriptions: { [key: string]: string } = {
+    "Negative Freak": NegativeFreakProject.description,
+    "yarn plantery": YarnPlanteryProject.description,
+    "Citir": CitirProject.description,
+    "dr.br": DrBrProject.description,
+    "sin su ru": SinSuRuProject.description,
+    "puresome": PuresomeProject.description,
+    "0100": ZeroOneZeroZeroProject.description,
+    "hyudo": HyudoProject.description,
+    "un deux trois": UnDeuxTroisProject.description,
+    "the garage tapes": TheGarageTapesProject.description,
   };
 
   const projects = [
@@ -34,8 +44,6 @@ export default function App() {
   const handleProjectClick = (projectName: string) => {
     setSelectedProject(projectName);
   };
-
-  const currentDescription = selectedProject ? projectDescriptions[selectedProject] : null;
 
   return (
     <div className="bg-black fixed inset-0 w-full h-full font-['Pretendard:Bold',sans-serif] flex overflow-hidden">
@@ -56,10 +64,10 @@ export default function App() {
 
         {/* Left Panel - Description */}
         <div className="absolute left-[20px] top-[200px] w-[calc(100%-40px)] max-w-[251px] font-['Pretendard:Regular',sans-serif] leading-[25px] not-italic text-[13px] text-white tracking-[-0.26px] uppercase">
-          {currentDescription ? (
-            <p className="whitespace-pre-line m-0">{currentDescription}</p>
+          {selectedProject ? (
+            <p className="whitespace-pre-line m-0">{projectDescriptions[selectedProject]}</p>
           ) : (
-            <p className="text-[#949494] m-0">프로젝트를 선택해주세요.</p>
+            <p className="text-[#949494] m-0">안녕하세요 구조를 시각화하는 디자이너 박솔비입니다</p>
           )}
         </div>
 

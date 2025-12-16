@@ -1,5 +1,5 @@
 export const UnDeuxTroisProject = {
-  description: "un deux trois 프로젝트 설명입니다.",
+  description: "un deux trois 프로젝트는 곧 업데이트 예정입니다..",
   images: [],
 };
 

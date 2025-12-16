@@ -1,5 +1,5 @@
 export const ZeroOneZeroZeroProject = {
-  description: "0100 프로젝트 설명입니다.",
+  description: "0100은 프리미엄 침구 브랜드입니다.",
   images: [],
 };
 
